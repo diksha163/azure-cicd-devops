@@ -1,0 +1,54 @@
+Azure CI/CD Pipeline Project - Overview
+
+This project demonstrates the implementation of an Azure DevOps CI/CD pipeline to deploy a containerized application to Azure Virtual Machines. The pipeline is configured to automate infrastructure provisioning, application deployment, and monitoring using best DevOps practices.
+
+Project Architecture
+
+Components Involved:
+
+1.Azure Virtual Machines (VMs): Hosting the application.
+2.Azure Container Registry (ACR): Storing Docker images.
+3.Azure Pipelines: Automating CI/CD.
+4.Terraform: Infrastructure as Code (IaC) for provisioning resources.
+5.Docker: Containerizing the application.
+6.Monitoring & Testing: Ensuring application health and performance.
+
+Workflow Summary:
+
+1.Infrastructure Setup: Terraform provisions Azure resources (VMs, ACR, networking, etc.).
+2.Application Build: Source code is built and containerized using Docker
+3.Push to ACR: Docker image is pushed to Azure Container Registry.
+4.Deploy to VM: The container is pulled from ACR and deployed on Azure Virtual Machines.
+5.Testing & Monitoring: CI/CD pipeline includes automated testing and monitoring setup.
+
+Prerequisites:
+
+1.Azure DevOps account
+2.Terraform installed locally
+3. Azure CLI installed
+
+Setting Up Infrastructure:
+
+- Navigate to the infra/ folder.
+- Run Terraform commands to provision resources:
+	terraform init
+	terraform apply -auto-approve
+
+Building and Pushing Docker Image:
+
+- Navigate to the app directory.
+- Build and tag the Docker image:
+	docker build -t <your-acr-name>.azurecr.io/your-app:latest .
+- Authenticate with Azure Container Registry and push the image:
+	docker push <your-acr-name>.azurecr.io/your-app:latest
+
+Running the CI/CD Pipeline
+
+- Configure Azure DevOps to connect with this GitHub repository.
+- Create a new pipeline and select azure-pipelines.yml.
+- Run the pipeline to deploy the application to the VM.
+
+Monitoring & Testing
+
+- Enable Azure Monitor and Application Insights for real-time monitoring.
+- Run automated tests in the pipeline to ensure deployment success.

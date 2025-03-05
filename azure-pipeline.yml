@@ -1,0 +1,37 @@
+trigger:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: Docker@2
+  inputs:
+    containerRegistry: 'yourContainerRegistry'
+    repository: 'your-app-name'
+    command: 'buildAndPush'
+    Dockerfile: '**/Dockerfile'
+    tags: 'latest'
+
+- task: AzureWebAppContainer@1
+  inputs:
+    azureSubscription: 'AzureSubscription'
+    appName: 'YourWebApp'
+    imageName: 'yourContainerRegistry/your-app-name:latest'
+    
+- task: PythonScript@0
+  inputs:
+    scriptSource: 'inline'
+    script: |
+      pip install pytest
+      pytest test_app.py
+
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: 'AzureSubscription'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      az monitor metrics alert create --name 'HighCPUUsageAlert' --resource-group 'YourResourceGroup' --scopes '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Web/sites/{webAppName}' --condition "avg CpuTime > 80" --action "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/microsoft.insights/actiongroups/{actionGroup}"
